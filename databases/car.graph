@@ -1,0 +1,15 @@
+doors,buying
+buying,maint
+persons,safety
+lug_boot,vgood
+lug_boot,good
+lug_boot,acc
+lug_boot,unacc
+safety,vgood
+safety,good
+safety,acc
+safety,unacc
+maint,vgood
+maint,good
+maint,acc
+maint,unacc
