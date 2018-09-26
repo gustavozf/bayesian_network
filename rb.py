@@ -30,6 +30,13 @@ tags = {
     "good":2,
     "vgood":3
 }
+# Dados da base
+datas = {
+    "vgood": [],
+    "good": [],
+    "acc": [],
+    "unacc": []
+}
 # Lista os nomes dos features
 features_names = ["buying", "maint", "doors", "persons", "lug_boot", "safety"]
 # Cria um dicionario de probabilidades
@@ -131,37 +138,69 @@ def car_reader(file_name):
 
     # cria o arquivo de estatistica
     create_stats(file_name, features_cout_per_class)
-
-def conta_ocorrencia(file_name, wanted_features):
-    # Abre o arquivo pra leitura
+# --------------------------------------------------------------------------- read
+def read_data(file_name):
     arq = open(file_name, 'r')
 
+    global datas
+    global num_amostras
+
+    for linhas in arq:
+        features = linhas.split(',')
+        
+        datas[features[6][:-1]].append(copy.deepcopy(features[0:6]))
+
+        num_amostras += 1;
+    
+    arq.close() 
+# --------------------------------------------------------------------------- Probabilidades
+def regra_bayes(prob_cond, px, py):
+    if py == 0 or px == 0:
+        return 0
+    else:
+        return (prob_cond*px)/py
+
+def prob_cond(wanted_features, classe):
+
     global features_names
+    global datas
 
     count = 0
-    amostras = arq.readlines()
-    arq.close()
 
-    lenFile = len(amostras)
+    lenFile = num_amostras
 
-    for amostra in amostras:
+    for amostras in datas[classe]:
         contem = True
-
-        # Le as features de uma amostra do arquivo
-        features = amostra.split(',')
-        features[6] = features[6][:-1]
 
         # analisa as features passadas pela funcao
         for feature in wanted_features.keys():
             # se a feature analisada possuir valor diferente,
             # entao nao entra no caso analisado
-            if features[features_names.index(feature)] != wanted_features[feature]:
+            if (amostras[features_names.index(feature)] != wanted_features[feature]):
                 contem = False
                 break
-
         # se a amostra possui todas features desejadas
         # aumenta o contador
         if contem:
             count+=1
 
-    print("Ocorrencia = {0}/{1} = {2}".format(count, lenFile, count/lenFile))
+    return count/lenFile
+
+def prob_classes(classe, features):
+    no_lug = prob_cond({'lug_boot':features['lug_boot']}, classe)
+    no_saf = regra_bayes(
+            prob_cond({'safety':features['safety'], 'persons':features['persons']}, classe),
+            prob_cond({'safety':features['safety']}, classe),
+            prob_cond({'persons':features['persons']}, classe))
+    no_buy = regra_bayes(
+            prob_cond({'doors':features['doors'], 'buying':features['buying']}, classe),
+            prob_cond({'buying':features['buying']}, classe),
+            prob_cond({'doors':features['doors']}, classe))
+    no_maint = regra_bayes(
+            prob_cond({'doors':features['doors'], 'buying':features['buying'], 'maint':features['maint']}, classe),
+            no_buy,
+            prob_cond({'maint':features['maint']}, classe))
+    
+    print(classe, no_lug, no_saf, no_maint)
+
+    return float(no_lug * no_saf * no_maint)
