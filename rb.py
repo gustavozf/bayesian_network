@@ -152,6 +152,13 @@ def read_data(file_name):
 
         num_amostras += 1;
     
+    classes['vgood'] = len(datas['vgood'])
+    classes['good'] = len(datas['good'])
+    classes['acc'] = len(datas['acc'])
+    classes['unacc'] = len(datas['unacc'])
+
+    print(classes, num_amostras)
+
     arq.close() 
 # --------------------------------------------------------------------------- Probabilidades
 def regra_bayes(prob_cond, px, py):
@@ -166,8 +173,6 @@ def prob_cond(wanted_features, classe):
     global datas
 
     count = 0
-
-    lenFile = num_amostras
 
     for amostras in datas[classe]:
         contem = True
@@ -184,7 +189,7 @@ def prob_cond(wanted_features, classe):
         if contem:
             count+=1
 
-    return count/lenFile
+    return count/classes[classe]
 
 def prob_classes(classe, features):
     no_lug = prob_cond({'lug_boot':features['lug_boot']}, classe)
@@ -201,6 +206,46 @@ def prob_classes(classe, features):
             no_buy,
             prob_cond({'maint':features['maint']}, classe))
     
-    print(classe, no_lug, no_saf, no_maint)
+    # print(classe, no_lug, no_saf, no_maint)
 
-    return float(no_lug * no_saf * no_maint)
+    return no_lug * no_saf * no_maint * (classes[classe]/num_amostras)
+
+def predict_bay_net(features):
+    maiorTag = 'vgood'
+    maiorValue = prob_classes('vgood', features)
+
+    for i in ['good', 'acc', 'unacc']:
+        aux = prob_classes(i, features)
+
+        if aux > maiorValue:
+            maiorTag = i
+            maiorValue = aux
+
+    # print("Predicao: " + maiorTag + '\n')
+
+    return [maiorTag, maiorValue]
+
+# --------------------------------------------------- Classificador Bayesiano
+def prob_classes_nb(classe, features):
+    prob = 1
+
+    # realiza a produtoria
+    for i in features.keys():
+        prob *= prob_cond({i:features[i]}, classe)
+
+    return prob * (classes[classe]/num_amostras)
+
+def predict_nb():
+    maiorTag = 'vgood'
+    maiorValue = prob_classes('vgood', features)
+
+    for i in ['good', 'acc', 'unacc']:
+        aux = prob_classes_nb(i, features)
+
+        if aux > maiorValue:
+            maiorTag = i
+            maiorValue = aux
+
+    # print("Predicao: " + maiorTag + '\n')
+
+    return [maiorTag, maiorValue]
