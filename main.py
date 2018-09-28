@@ -1,4 +1,5 @@
 from rb import *
+import time
 # -------------------------------------- Carrega os dados
 database = "./databases/car.features"
 read_data(database)
@@ -12,6 +13,7 @@ mat_confusao = [[0 for i in range(4)] for j in range(4)]
 
 print("Calculando dados via Redes Bayesianas...\n")
 
+tempo = time.time()
 for amos in data:
     aux = amos.split(',')
 
@@ -36,12 +38,13 @@ count = 0
 for i in range(4):
     count += mat_confusao[i][i]
 
-print("Acuracia = {0}/{1} = {2}".format(count, 1728, count/1728*100))
+print("Acuracia = {0}/{1} = {2} | Execucao: {3}s".format(count, 1728, count/1728*100, time.time() - tempo))
 
 # ------------------------------------------------ Inicia Calculos
 mat_confusao = [[0 for i in range(4)] for j in range(4)]
 print("Calculando dados via NB classifier...\n")
 
+tempo = time.time()
 for amos in data:
     aux = amos.split(',')
 
@@ -66,4 +69,4 @@ count = 0
 for i in range(4):
     count += mat_confusao[i][i]
 
-print("Acuracia = {0}/{1} = {2}".format(count, 1728, count/1728*100))
+print("Acuracia = {0}/{1} = {2} | Execucao: {3}s".format(count, 1728, count/1728*100, time.time() - tempo))

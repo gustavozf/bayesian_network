@@ -150,7 +150,7 @@ def read_data(file_name):
         
         datas[features[6][:-1]].append(copy.deepcopy(features[0:6]))
 
-        num_amostras += 1;
+        num_amostras += 1
     
     classes['vgood'] = len(datas['vgood'])
     classes['good'] = len(datas['good'])
