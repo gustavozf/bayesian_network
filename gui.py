@@ -34,15 +34,11 @@ def pop_up():
 		'lug_boot': nomes[v5.get()],
 		'safety': nomes[v6.get()]
 	}
-	
-	if 'Selecionar Valor' in ans.values():
-			print('Favor preencher todos os valores!\n')
-			answ['text'] = 'Favor preencher todos os valores!'
-	else:
-			print(ans)
-			x, _ = predict_bay_net(ans)
-			print("Predicao: {}\n".format(x))
-			answ['text'] = "Avaliacao: {}".format(tags[x])
+
+	print(ans)
+	x, _ = predict_bay_net(ans)
+	print("Predicao: {}\n".format(x))
+	answ['text'] = "Avaliacao: {}".format(tags[x])
 
 # --------------------------------------------------
 root = Tk()
@@ -61,8 +57,8 @@ persons  =  [ "2", "4", "Mais"]
 lug_boot =  [ "Pequeno", "Medio", "Grande"]
 safety   =  [ "Baixo", "Medio", "Alto"]
 # ------------------------------------------------------------------------ Titulo
-titulo = Label(root, text="",width=20,font=("bold", 20))
-titulo.place(x=90,y=75)
+titulo = Label(root, text="Avaliador de Carros",width=20,font=("bold", 20))
+titulo.place(x=90,y=50)
 # ------------------------------------------------------------------------- Botao do valor
 label_1 = Label(root, text="Valor do Altomovel",width=20,font=("bold", 10))
 label_1.place(x=70,y=100)
@@ -70,7 +66,7 @@ label_1.place(x=70,y=100)
 v1=StringVar()
 droplist=OptionMenu(root,v1, *buying)
 droplist.config(width=15)
-v1.set('Selecionar Valor') 
+v1.set('Baixo') 
 droplist.place(x=240,y=100)
 
 # ------------------------------------------------------------------------- Botao do valor da manutencao
@@ -80,7 +76,7 @@ label_2.place(x=70,y=150)
 v2=StringVar()
 droplist=OptionMenu(root,v2, *maint)
 droplist.config(width=15)
-v2.set('Selecionar Valor') 
+v2.set('Baixo') 
 droplist.place(x=240,y=150)
 
 # ------------------------------------------------------------------------- Botao do num de portas
@@ -90,7 +86,7 @@ label_3.place(x=70,y=200)
 v3=StringVar()
 droplist=OptionMenu(root,v3, *doors)
 droplist.config(width=15)
-v3.set('Selecionar Valor') 
+v3.set('2') 
 droplist.place(x=240,y=200)
 
 # ------------------------------------------------------------------------- Botao do num de lugares
@@ -100,7 +96,7 @@ label_4.place(x=70,y=250)
 v4=StringVar()
 droplist=OptionMenu(root,v4, *persons)
 droplist.config(width=15)
-v4.set('Selecionar Valor') 
+v4.set('2') 
 droplist.place(x=240,y=250)
 
 # ------------------------------------------------------------------------- Botao do tam do porta mala
@@ -110,7 +106,7 @@ label_5.place(x=70,y=300)
 v5=StringVar()
 droplist=OptionMenu(root,v5, *lug_boot)
 droplist.config(width=15)
-v5.set('Selecionar Valor') 
+v5.set('Pequeno') 
 droplist.place(x=240,y=300)
 
 # ------------------------------------------------------------------------- Botao do nivel de seguranca
@@ -120,7 +116,7 @@ label_6.place(x=70,y=350)
 v6=StringVar()
 droplist=OptionMenu(root,v6, *safety)
 droplist.config(width=15)
-v6.set('Selecionar Valor') 
+v6.set('Baixo') 
 droplist.place(x=240,y=350)
 
 # ------------------------------------------------------------------------- Botao de calculo
